@@ -4,7 +4,8 @@
   "description": "node server for react client to connect",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "startt" : "nodemon server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "KHANG",
@@ -13,6 +14,7 @@
     "@google-cloud/storage": "^2.5.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
+    "custom-env": "^1.0.1",
     "express": "^4.17.0",
     "firebase": "^6.0.4",
     "firebase-admin": "^8.0.0",

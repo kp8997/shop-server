@@ -5,12 +5,13 @@ const googleStorage = require('@google-cloud/storage');
 const multer = require('multer');
 const gcsSharp = require('multer-sharp');
 const mongoose = require("mongoose");
+require ('custom-env').env('staging');
 
 //const bucket = googleStorage.bucket("gs://mystorage-e3329.appspot.com/");
 const bucket = "gs://mystorage-e3329.appspot.com/"
 const myStorage = gcsSharp({
     projectId : "mystorage-e3329",
-    keyFilename : process.env.KEYPATH || __dirname + "../../../google-utils/mystorage-e3329-firebase-adminsdk-nvmza-13f2c30b20.json",
+    keyFilename : process.env.KEYPATH,
     bucket : bucket,
     destination: 'images',
 });

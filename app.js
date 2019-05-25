@@ -6,8 +6,11 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const routeCar = require("./api/routes/car");
 const routeHome = require("./api/routes/home");
+require ('custom-env').env('staging');
 
-mongoose.connect("mongodb://invis3:Hello123@ds125994.mlab.com:25994/shop-server", { useNewUrlParser: true, useCreateIndex: true}  );
+const name = process.env.DBNAME;
+const pass = process.env.DBPASS;
+mongoose.connect(`mongodb://${name}:${pass}@ds125994.mlab.com:25994/shop-server`, { useNewUrlParser: true, useCreateIndex: true}  );
 var db = mongoose.connection;
 
 db.on('error', (error) => {
