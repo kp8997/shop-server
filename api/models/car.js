@@ -35,7 +35,11 @@ const carSchema = mongoose.Schema({
         type : Number,
         required : true,
     },
-    images : {
+    imagesPath : {
+        type : [String],
+        require : false
+    },
+    imagesFilename : {
         type : [String],
         require : false
     }

@@ -6,6 +6,9 @@ const multer = require('multer');
 const gcsSharp = require('multer-sharp');
 const mongoose = require("mongoose");
 require ('custom-env').env('staging');
+// const firebase = require('firebase');
+// const storage = firebase.storage();
+// const storageRef = storage.ref();
 
 //const bucket = googleStorage.bucket("gs://mystorage-e3329.appspot.com/");
 const bucket = "gs://mystorage-e3329.appspot.com/"
@@ -36,11 +39,15 @@ const upload = multer({
 });
 
 router.get("/", (req, res) => {
+    // list of image on firebase storage
+    //const imagesRef = storageRef.child('images');
+
     Car.find().select().exec().then(docs =>{
         console.log(docs);
         const response = {
             count : docs.length,
             cars : docs.map(doc => {
+                //const image = imagesRef.child(`${doc.imagesFilename + '.jpg'} `);
                 return {
                     brand : doc.brand,
                     origin : doc.origin,
@@ -50,7 +57,7 @@ router.get("/", (req, res) => {
                     distance : doc.distance,
                     gear : doc.gear,
                     price : doc.price,
-                    images : doc.images,
+                    imagesPath : doc.imagesPath,
                 }
             })
         };
@@ -74,7 +81,8 @@ router.post("/", upload.single('images'), (req, res) => {
         distance : req.body.distance,
         gear : req.body.gear,
         price : req.body.price,
-        images : req.file.path
+        imagesPath : req.file.path,
+        imagesFilename : req.file.filename,
     });
     car.save().then(car => {
         if (!req.file) {
