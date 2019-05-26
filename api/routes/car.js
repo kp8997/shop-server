@@ -49,6 +49,7 @@ router.get("/", (req, res) => {
             cars : docs.map(doc => {
                 //const image = imagesRef.child(`${doc.imagesFilename + '.jpg'} `);
                 return {
+                    tittle : doc.title
                     brand : doc.brand,
                     origin : doc.origin,
                     year : doc.year,
@@ -73,6 +74,7 @@ router.get("/", (req, res) => {
 router.post("/", upload.single('images'), (req, res) => {
     const car = new Car({
         _id: new mongoose.Types.ObjectId(),
+        title : req.body.title,
         brand : req.body.brand,
         origin : req.body.origin,
         year : req.body.year,
