@@ -57,7 +57,7 @@ router.get("/", (req, res) => {
                     distance : doc.distance,
                     gear : doc.gear,
                     price : doc.price,
-                    imagesPath : doc.imagesPath,
+                    imagesFilename : doc.imagesFilename,
                 }
             })
         };
