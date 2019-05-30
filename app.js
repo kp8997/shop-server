@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const routeCar = require("./api/routes/car");
 const routeHome = require("./api/routes/home");
+const routeUser = require("./api/routes/user");
 
 require ('custom-env').env('staging');
 
@@ -43,8 +44,13 @@ app.use(bodyParser.json());
 //app.set("view engine", 'ejs');
 // app.use(express.static(path.join(__dirname, './public/')));
 
+// --------------- ROUTE -----------------------
+
 app.use("/", routeHome);
 app.use("/car", routeCar);
+app.use("/user", routeUser);
+
+// --------------- CATCH ERROR -----------------
 
 app.use((req,res,next) => {
 	const error = new Error("Not found");
