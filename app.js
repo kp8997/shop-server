@@ -39,8 +39,12 @@ app.use((req,res,next) => {
     next();
 });
 
-app.options('*', cors());
-app.use(cors());
+const corsOption = {
+  origin: '*',
+}
+
+// app.options('*', cors());
+// app.use(cors());
 
 // ----------- HELPER MODULE ------------------
 
@@ -56,9 +60,9 @@ app.use(bodyParser.json());
 
 // --------------- ROUTE -----------------------
 
-app.use("/", routeHome);
-app.use("/car", routeCar);
-app.use("/user", routeUser);
+app.use("/", cors(corsOption), routeHome);
+app.use("/car", cors(corsOption), routeCar);
+app.use("/user", cors(corsOption), routeUser);
 
 // --------------- CATCH ERROR -----------------
 
