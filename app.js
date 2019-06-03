@@ -33,7 +33,6 @@ app.use((req,res,next) => {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authoriztion");
     if (req.method === "OPTIONS")
         {
-          res.header("Access-Control-Allow-Origin", "*");
           res.header("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
           return res.status(200).json();
         }
@@ -62,9 +61,9 @@ app.use(bodyParser.json());
 
 // --------------- ROUTE -----------------------
 
-app.use("/", cors(corsOption), routeHome);
-app.use("/car", cors(corsOption), routeCar);
-app.use("/user", cors(corsOption), routeUser);
+app.use("/", routeHome); 
+app.use("/car", routeCar);
+app.use("/user", routeUser);
 
 // --------------- CATCH ERROR -----------------
 
