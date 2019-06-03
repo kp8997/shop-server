@@ -41,7 +41,6 @@ const upload = multer({
 router.get("/", (req, res) => {
     // list of image on firebase storage
     //const imagesRef = storageRef.child('images');
-
     Car.find().select().exec().then(docs =>{
         console.log(docs);
         const response = {
