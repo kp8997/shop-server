@@ -7,9 +7,14 @@ const bodyParser = require("body-parser");
 const routeCar = require("./api/routes/car");
 const routeHome = require("./api/routes/home");
 const routeUser = require("./api/routes/user");
+const cors = require("cors");
 
+
+// ---------- ENVIRONMENT VARIABLE -----------
 require ('custom-env').env('staging');
 
+
+//----------- DATABASE -----------------------
 const name = process.env.DBNAME;
 const pass = process.env.DBPASS;
 mongoose.connect(`mongodb://${name}:${pass}@ds125994.mlab.com:25994/shop-server`, { useNewUrlParser: true, useCreateIndex: true}  );
@@ -22,7 +27,7 @@ db.on('error', (error) => {
     console.log('Connected to database successfully');
 });
 
-
+// ----------- CORS --------------------------
 app.use((req,res,next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authoriztion");
@@ -33,6 +38,11 @@ app.use((req,res,next) => {
         }
     next();
 });
+
+app.options('*', cors());
+app.use(cors());
+
+// ----------- HELPER MODULE ------------------
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, './public/')));
