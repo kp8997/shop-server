@@ -34,7 +34,7 @@ app.use((req,res,next) => {
     if (req.method === "OPTIONS")
         {
           res.header("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
-          return res.status(200).json();
+          return res.status(200).json({});
         }
 
   next();
@@ -45,7 +45,7 @@ app.use((req,res,next) => {
 // }
 
 // app.options('*', cors());
-// app.use(cors());
+ app.use(cors());
 
 // ----------- HELPER MODULE ------------------
 
