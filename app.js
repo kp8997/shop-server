@@ -31,6 +31,7 @@ db.on('error', (error) => {
 app.use((req,res,next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authoriztion");
+  res.setHeader('Access-Control-Allow-Credentials', true);
     if (req.method === "OPTIONS") {
           res.setHeader("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
           return res.status(200).json({});
