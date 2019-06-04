@@ -33,10 +33,10 @@ app.use((req,res,next) => {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authoriztion");
   res.header('Access-Control-Allow-Credentials', true);
   res.header("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
-    if (req.method === "OPTIONS") {
-      res.header("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
-          return res.status(200).json({});
-    }
+    // if (req.method === "OPTIONS") {
+    //   res.header("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
+    //       return res.status(200).json({});
+    // }
   next();
 });
 
