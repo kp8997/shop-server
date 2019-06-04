@@ -52,7 +52,7 @@ db.on('error', (error) => {
 
 // app.options('*', cors());
 app.use(cors({
-  origin: '*',
+  origin: 'http://localhost:3000',
   credentials: true
 }));
 
