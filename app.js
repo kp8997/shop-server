@@ -28,33 +28,33 @@ db.on('error', (error) => {
 });
 
 // ----------- CORS --------------------------
-// app.use((req,res,next) => {
-//   // res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authoriztion");
-//   res.header('Access-Control-Allow-Credentials', true);
-//   // res.header("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
-//     if (req.method === "OPTIONS") {
-//       res.header("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
-//           return res.status(200).json({});
-//     }
-//     if (req.method === "POST") {
-//       res.header("Access-Control-Allow-Origin", "*");
-//       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authoriztion");
-//       res.header('Access-Control-Allow-Credentials', true);
-//     }
-//   next();
-// });
+app.use((req,res,next) => {
+  // res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authoriztion");
+  res.header('Access-Control-Allow-Credentials', true);
+  // res.header("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
+    if (req.method === "OPTIONS") {
+      res.header("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
+          return res.status(200).json({});
+    }
+    if (req.method === "POST") {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authoriztion");
+      res.header('Access-Control-Allow-Credentials', true);
+    }
+  next();
+});
 
 // const corsOption = {
 //   origin: '*',
 // }
 
 // app.options('*', cors());
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}));
+// app.use(cors({
+//   origin: 'http://localhost:3000',
+//   credentials: true
+// }));
 
 // ----------- HELPER MODULE ------------------
 
