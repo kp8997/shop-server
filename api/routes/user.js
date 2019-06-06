@@ -36,6 +36,19 @@ const upload = multer({
     limits: myLimit,
 });
 
+router.get("/", (req,res) => {
+    User.find().then(docs => {
+        res.status(200).json({
+            count : docs.length,
+            users : docs
+        });
+    }).catch(err => { 
+        console.log(err); 
+        res.status(500).json({
+        error : err
+    })});
+})
+
 
 router.post("/", (req, res) => {
     bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
