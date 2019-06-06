@@ -51,16 +51,13 @@ router.get("/", (req,res) => {
 
 
 router.post("/", (req, res) => {
+    console.log(req.body.password)
     bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
-        if (err)
-        {
-            console.log(err);
-        }
         if (hash) {
             const user = new User({
                 _id: new mongoose.Types.ObjectId(),
                 email : req.body.email,
-                password : req.body.password,
+                password : hash,
                 name : req.body.name,
                 phone : req.body.phone
             });
@@ -74,6 +71,10 @@ router.post("/", (req, res) => {
                     error : `user has error ${err}`
                 });
             });
+        }
+        if (err)
+        {
+            console.log(err);
         }
     });
     
