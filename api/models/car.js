@@ -41,11 +41,11 @@ const carSchema = Schema({
         required : true,
     },
     imagesPath : {
-        type : String,
+        type : [String],
         required : false
     },
     imagesFilename : {
-        type : String,
+        type : [String],
         required : false
     },
     author : {
