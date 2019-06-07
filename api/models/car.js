@@ -51,6 +51,7 @@ const carSchema = Schema({
     author : {
         type : Schema.Types.ObjectId,
         ref : 'User',
+        required : false
     },
     createAt : {
         type : Date,
