@@ -34,6 +34,7 @@ const userSchema = Schema({
     cars : {
         type : [Schema.Types.ObjectId],
         ref : "Car",
+        required : false
     },
     tokens : [{
         token : {
