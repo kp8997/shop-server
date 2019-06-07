@@ -15,9 +15,11 @@ require ('custom-env').env('staging');
 
 
 //----------- DATABASE -----------------------
+const url = 'mongodb://localhost:27017/test';
 const name = process.env.DBNAME;
 const pass = process.env.DBPASS;
-mongoose.connect(`mongodb://${name}:${pass}@ds125994.mlab.com:25994/shop-server`, { useNewUrlParser: true, useCreateIndex: true}  );
+//mongoose.connect(`mongodb://${name}:${pass}@ds125994.mlab.com:25994/shop-server`, { useNewUrlParser: true, useCreateIndex: true}  );
+mongoose.connect(url, { useNewUrlParser: true, useCreateIndex: true})
 var db = mongoose.connection;
 
 db.on('error', (error) => {
@@ -46,30 +48,15 @@ app.use(bodyParser.json());
 app.use((req,res,next) => {
   // res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authoriztion");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   res.header('Access-Control-Allow-Credentials', true);
   res.header("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
     if (req.method === "OPTIONS") {
       res.header("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
           return res.status(200).json({});
     }
-    // if (req.method === "POST") {
-    //   res.header("Access-Control-Allow-Origin", "*");
-    //   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authoriztion");
-    //   res.header('Access-Control-Allow-Credentials', true);
-    // }
   next();
 });
-
-// const corsOption = {
-//   origin: '*',
-// }
-
-
-// app.use(cors({
-//   origin: '*',
-//   credentials: true
-// }));
 
 // --------------- ROUTE -----------------------
 

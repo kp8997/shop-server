@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const User = require("./user");
 
-
-const carSchema = mongoose.Schema({
+const carSchema = Schema({
     _id: mongoose.Schema.Types.ObjectId,
     title : {
         type : String,
@@ -40,12 +41,20 @@ const carSchema = mongoose.Schema({
         required : true,
     },
     imagesPath : {
-        type : [String],
-        require : false
+        type : String,
+        required : false
     },
     imagesFilename : {
-        type : [String],
-        require : false
+        type : String,
+        required : false
+    },
+    author : {
+        type : Schema.Types.ObjectId,
+        ref : 'User',
+    },
+    createAt : {
+        type : Date,
+        default : Date.now(),
     }
 });
 
