@@ -36,8 +36,8 @@ const upload = multer({
     limits: myLimit,
 });
 
-router.get("/", (req,res) => {
-    User.find().select("_id, name, email, phone").exec().then(docs => {
+router.get("/", (req, res) => {
+    User.find().select('_id name email phone').exec().then(docs => {
         res.status(200).json({
             count : docs.length,
             users : docs
