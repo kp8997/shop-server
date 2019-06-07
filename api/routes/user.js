@@ -37,7 +37,7 @@ const upload = multer({
 });
 
 router.get("/", (req,res) => {
-    User.find().then(docs => {
+    User.find().select(_id, name, email, phone).then(docs => {
         res.status(200).json({
             count : docs.length,
             users : docs
