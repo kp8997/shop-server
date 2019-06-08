@@ -18,8 +18,8 @@ require ('custom-env').env('staging');
 const url = 'mongodb://localhost:27017/test';
 const name = process.env.DBNAME;
 const pass = process.env.DBPASS;
-mongoose.connect(`mongodb://${name}:${pass}@ds125994.mlab.com:25994/shop-server`, { useNewUrlParser: true, useCreateIndex: true}  );
-//mongoose.connect(url, { useNewUrlParser: true, useCreateIndex: true})
+//mongoose.connect(`mongodb://${name}:${pass}@ds125994.mlab.com:25994/shop-server`, { useNewUrlParser: true, useCreateIndex: true}  );
+mongoose.connect(url, { useNewUrlParser: true, useCreateIndex: true})
 var db = mongoose.connection;
 
 db.on('error', (error) => {

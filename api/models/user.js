@@ -83,4 +83,23 @@ userSchema.methods.removeToken = function(token) {
     });
 };
 
+userSchema.statics.findByToken = function(token) {
+    const user = this;
+    let decoded;
+    try {
+        decoded = jwt.verify(token, process.env.JWT_KEY || 'secret');
+    } catch (err) {
+        console.log(err);
+        return new Promise((resolve, reject) => {
+            reject();
+        });
+    }
+
+    return user.findOne({
+        "_id" : decoded._id,
+        "tokens.token" : token,
+        "tokens.access" : "auth"
+    })
+}   
+
 module.exports = mongoose.model("User", userSchema);

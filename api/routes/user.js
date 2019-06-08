@@ -8,7 +8,7 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 const bucket = "gs://mystorage-e3329.appspot.com/";
-
+const checkAuth = require("../middleware/checkAuth");
 
 const myStorage = gcsSharp({
     projectId : "mystorage-e3329",
@@ -36,6 +36,10 @@ const upload = multer({
     limits: myLimit,
 });
 
+router.post("/image", (req, res) => {
+    
+});
+
 router.get("/", (req, res) => {
     User.find().select('_id name email phone').exec().then(docs => {
         res.status(200).json({
@@ -49,6 +53,24 @@ router.get("/", (req, res) => {
     })});
 })
 
+router.get("/:id", checkAuth, (req, res) => {
+    User.findById({_id : req.params.id})
+    .select("_id email name phone createAt")
+    .exec()
+    .then(user => {
+        res.status(200).json({
+            message : "get successfully",
+            user : user
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            message : "get unsuccessfully in GET DETAIL",
+            error : err
+        });
+    });
+});
 
 router.post("/login", (req, res) => {
     User.find({email : req.body.email})
@@ -71,6 +93,7 @@ router.post("/login", (req, res) => {
                             return res.status(200).json({
                                 message : "Auth successfully in LOGIN",
                                 user : {
+                                    id : user[0]._id,
                                     email : user[0].email,
                                     token : token,
                                 }
@@ -93,7 +116,7 @@ router.post("/login", (req, res) => {
                 error : err
             })
         });
-})
+});
 
 router.post("/register", (req, res) => {
     User.find({ email : req.body.email})
@@ -112,7 +135,7 @@ router.post("/register", (req, res) => {
                         user.save().then(user => {
                             return user.generateAuthToken();
                         }).then(token => {
-                            console.log(token);
+                            // console.log(token);
                             res.header('x-auth', token);
                             res.status(201).json({
                                 message : "user save successfully",
