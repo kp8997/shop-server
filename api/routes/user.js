@@ -125,8 +125,9 @@ router.post("/register", (req, res) => {
             if (user.length < 1) {
                 bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
                     if (hash) {
+                        const id = new mongoose.Types.ObjectId()
                         const user = new User({
-                            _id: new mongoose.Types.ObjectId(),
+                            _id: id,
                             email : req.body.email,
                             password : hash,
                             name : req.body.name,
@@ -139,7 +140,8 @@ router.post("/register", (req, res) => {
                             res.header('x-auth', token);
                             res.status(201).json({
                                 message : "user save successfully",
-                                token : token
+                                token : token,
+                                id : id,
                             });
                         }).catch(err => {
                             console.log(err);
