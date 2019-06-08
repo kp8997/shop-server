@@ -164,11 +164,15 @@ router.post("/register", (req, res) => {
         .catch(err => {
             console.log(err);
             res.status(500).json({error : `Error in ${err}`});
-        });
+        });       
+});
 
-
-
-        
+router.delete("/logout", checkAuth, (req, res) => {
+    req.user.removeToken(req.token).then(() => {
+        res.status(200).json({ message: "user_logout remove token successfully" });
+    }, () => {
+        res.status(400).json({ message: "user_logout remove token failure" });
+    });
 });
 
 module.exports = router;

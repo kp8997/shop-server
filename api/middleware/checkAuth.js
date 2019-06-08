@@ -22,7 +22,7 @@ module.exports = (req, res, next) => {
             });
         });
     } else {
-        res.status(401).json({
+        return res.status(401).json({
             message : "Not Have Token in Authorization in header"
         });
     }
