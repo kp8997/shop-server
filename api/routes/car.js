@@ -42,7 +42,7 @@ router.get("/", (req, res) => {
     // list of image on firebase storage
     //const imagesRef = storageRef.child('images');
     Car.find().select().exec().then(docs =>{
-        console.log(docs);
+        //console.log(docs);
         const response = {
             count : docs.length,
             cars : docs.map(doc => {
@@ -66,8 +66,50 @@ router.get("/", (req, res) => {
     }).catch(err => {
         console.log(err)
         res.status(500).json({
-            message: err
+            message: "ERROR IN GET ALL CAR",
+            error : err
         });
+    });
+});
+
+
+router.get("/:indexPage" , (req, res) => {
+    const indexPage = req.params.indexPage;
+    Car.find().select().skip(indexPage * 2).limit(2).exec().then(docs => {
+        //console.log(docs);
+        Car.count({}, (err, count) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(count);
+                const response = {
+                    count : count,
+                    cars : docs.map(doc => {
+                        return {
+                            id : doc._id,
+                            title : doc.title,
+                            brand : doc.brand,
+                            origin : doc.origin,
+                            year : doc.year,
+                            model : doc.model,
+                            color : doc.color,
+                            distance : doc.distance,
+                            gear : doc.gear,
+                            price : doc.price,
+                            imagesFilename : doc.imagesFilename,
+                        }
+                    })
+                };
+                res.status(200).json(response);
+            }
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({
+            message : "ERROR IN GET PAGINATION",
+            error : err
+        });
+
     });
 });
 
