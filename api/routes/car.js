@@ -86,12 +86,11 @@ router.get("/:indexPage" , (req, res) => {
                 const response = {
                     count : count,
                     cars : docs.map(doc => {
-                        let author = "Admin"
-                        // if (typeof doc.author.name !== undefined) {
-                        //     // author = doc.author.name;
-                        //     console.log(doc.author.name);
-                        //     author = doc.author.name;
-                        // }
+                        let authorName = "Admin"
+                        if (doc.author !== undefined) {
+                            console.log(doc.author.name);
+                            authorName = doc.author.name;
+                        }
                         return {
                             id : doc._id,
                             title : doc.title,
@@ -104,7 +103,7 @@ router.get("/:indexPage" , (req, res) => {
                             gear : doc.gear,
                             price : doc.price,
                             imagesFilename : doc.imagesFilename,
-                            author : author,
+                            author : authorName
                         }
                     })
                 };
