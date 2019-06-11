@@ -5,6 +5,7 @@ const googleStorage = require('@google-cloud/storage');
 const multer = require('multer');
 const gcsSharp = require('multer-sharp');
 const mongoose = require("mongoose");
+const checkAuth = require("../middleware/checkAuth");
 require ('custom-env').env('staging');
 // const firebase = require('firebase');
 // const storage = firebase.storage();
@@ -113,7 +114,7 @@ router.get("/:indexPage" , (req, res) => {
     });
 });
 
-router.post("/", upload.single('images'), (req, res) => {
+router.post("/", checkAuth, upload.single('images'), (req, res) => {
     const car = new Car({
         _id: new mongoose.Types.ObjectId(),
         title : req.body.title,
@@ -127,6 +128,7 @@ router.post("/", upload.single('images'), (req, res) => {
         price : req.body.price,
         imagesPath : req.file.path,
         imagesFilename : req.file.filename,
+        author : req.user._id
     });
     car.save().then(car => {
         if (!req.file) {
