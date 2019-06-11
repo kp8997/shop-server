@@ -87,10 +87,10 @@ router.get("/:indexPage" , (req, res) => {
                     count : count,
                     cars : docs.map(doc => {
                         let author = "Admin Test"
-                        if (doc.author.name) {
-                            // author = doc.author.name;
-                            console.log(doc.author.name);
-                        }
+                        // if (doc.author.name) {
+                        //     // author = doc.author.name;
+                        //     console.log(doc.author.name);
+                        // }
                         return {
                             id : doc._id,
                             title : doc.title,
@@ -103,7 +103,7 @@ router.get("/:indexPage" , (req, res) => {
                             gear : doc.gear,
                             price : doc.price,
                             imagesFilename : doc.imagesFilename,
-                            // author : author,
+                            author : author,
                         }
                     })
                 };
