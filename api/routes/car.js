@@ -76,7 +76,7 @@ router.get("/", (req, res) => {
 
 router.get("/:indexPage" , (req, res) => {
     const indexPage = req.params.indexPage;
-    Car.find().select().skip(indexPage * 2).limit(2).exec().then(docs => {
+    Car.find().populate('author').select().skip(indexPage * 2).limit(2).exec().then(docs => {
         //console.log(docs);
         Car.count({}, (err, count) => {
             if (err) {
@@ -98,6 +98,7 @@ router.get("/:indexPage" , (req, res) => {
                             gear : doc.gear,
                             price : doc.price,
                             imagesFilename : doc.imagesFilename,
+                            author : doc.author.name,
                         }
                     })
                 };
