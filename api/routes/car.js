@@ -78,7 +78,7 @@ router.get("/:indexPage" , (req, res) => {
     const indexPage = req.params.indexPage;
     Car.find().populate('author').select().skip(indexPage * 2).limit(2).exec().then(docs => {
         //console.log(docs);
-        Car.count({}, (err, count) => {
+        Car.countDocuments({}, (err, count) => {
             if (err) {
                 console.log(err);
             } else {
@@ -86,11 +86,12 @@ router.get("/:indexPage" , (req, res) => {
                 const response = {
                     count : count,
                     cars : docs.map(doc => {
-                        let author = "Admin Test"
-                        // if (doc.author.name) {
-                        //     // author = doc.author.name;
-                        //     console.log(doc.author.name);
-                        // }
+                        let author = "Admin"
+                        if (typeof doc.author.name !== "undefined") {
+                            // author = doc.author.name;
+                            console.log(doc.author.name);
+                            author = doc.author.name;
+                        }
                         return {
                             id : doc._id,
                             title : doc.title,
