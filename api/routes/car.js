@@ -86,6 +86,10 @@ router.get("/:indexPage" , (req, res) => {
                 const response = {
                     count : count,
                     cars : docs.map(doc => {
+                        let author = "Admin Test"
+                        if (doc.author.name) {
+                            author = doc.author.name;
+                        }
                         return {
                             id : doc._id,
                             title : doc.title,
@@ -98,7 +102,7 @@ router.get("/:indexPage" , (req, res) => {
                             gear : doc.gear,
                             price : doc.price,
                             imagesFilename : doc.imagesFilename,
-                            author : doc.author.name,
+                            author : author,
                         }
                     })
                 };
