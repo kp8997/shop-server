@@ -9,7 +9,7 @@ const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 const bucket = "gs://mystorage-e3329.appspot.com/";
 const checkAuth = require("../middleware/checkAuth");
-
+const Car = require("../models/car");
 const myStorage = gcsSharp({
     projectId : "mystorage-e3329",
     keyFilename : process.env.KEYPATH,
@@ -80,12 +80,16 @@ router.get("/", (req, res) => {
 //SUCCESS
 router.get("/:id", checkAuth, (req, res) => {
     User.findById({_id : req.params.id})
-    .select("_id email name phone createAt")
+    .select("_id email name phone createAt cars").populate({
+        path : 'cars',
+        model : 'Car',
+        select : "createAt _id title brand origin price year model color gear imagesFilename"
+    })
     .exec()
     .then(user => {
         res.status(200).json({
             message : "get successfully",
-            user : user
+            user : user,
         });
     })
     .catch(err => {
