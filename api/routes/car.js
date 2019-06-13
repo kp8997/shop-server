@@ -76,7 +76,7 @@ router.get("/", (req, res) => {
 });
 
 // GET DETAIL CAR BY CAR ID - SUCCESS
-router.get("/:id", (req, res) => {
+router.get("/detail/:id", (req, res) => {
     const id = req.params.id;
     Car.findOne({_id : id}).select().exec().then(doc => {
         console.log(doc);
