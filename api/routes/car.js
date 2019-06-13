@@ -153,8 +153,8 @@ router.get("/:indexPage" , (req, res) => {
                 const response = {
                     count : count,
                     cars : docs.map(doc => {
-                        let authorName = "Admin"
-                        if (doc.author !== undefined) {
+                        let authorName = "Admin";
+                        if (doc.author !== undefined && doc.author !== null) {
                             console.log(doc.author.name);
                             authorName = doc.author.name;
                         }
