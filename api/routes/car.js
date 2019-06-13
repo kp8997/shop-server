@@ -6,6 +6,7 @@ const multer = require('multer');
 const gcsSharp = require('multer-sharp');
 const mongoose = require("mongoose");
 const checkAuth = require("../middleware/checkAuth");
+const User = require("../models/user");
 require ('custom-env').env('staging');
 // const firebase = require('firebase');
 // const storage = firebase.storage();
@@ -39,6 +40,7 @@ const upload = multer({
     limits: myLimit,
 });
 
+// GET ALL CAR WITH OUT PAGINATION - SUCCESS BUT NOT USE ANYMORE
 router.get("/", (req, res) => {
     // list of image on firebase storage
     //const imagesRef = storageRef.child('images');
@@ -73,7 +75,72 @@ router.get("/", (req, res) => {
     });
 });
 
+// GET DETAIL CAR BY CAR ID - SUCCESS
+router.get("/:id", (req, res) => {
+    const id = req.params.id;
+    Car.findOne({_id : id}).select().exec().then(doc => {
+        console.log(doc);
+        res.status(200).json({
+            message : "get a car successfully",
+            car : {
+                id : doc._id,
+                title : doc.title,
+                brand : doc.brand,
+                origin : doc.origin,
+                year : doc.year,
+                model : doc.model,
+                color : doc.color,
+                distance : doc.distance,
+                gear : doc.gear,
+                price : doc.price,
+                imagesFilename : doc.imagesFilename,
+            }
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({
+            message : "Error in get detail car",
+            error : err,
+        });
+    })
+});
 
+// GET CAR BY USER ID - SUCCESS
+router.get("/my-car/:userId", (req, res) => {
+    const userId = req.params.userId;
+    Car.find({author : userId}).select("_id brand origin model price year imagesFilename").exec().then(cars => {
+        console.log(cars);
+        if (cars.length < 1) {
+            res.status(404).json({
+                message : "Can not find any car with that id",
+            });
+        } else {
+            const response = {
+                count : cars.length,
+                cars : cars.map(doc => {
+                    return {
+                        id : doc._id,
+                        brand : doc.brand,
+                        origin : doc.origin,
+                        year : doc.year,
+                        model : doc.model,
+                        price : doc.price,
+                        imagesFilename : doc.imagesFilename,
+                    }
+                }),
+            }
+            res.status(200).json(response);
+        }
+    }).catch(err => {
+        console.log(err);
+        res.status(404).json({
+            message : "Error in find car by user id",
+            error : err,
+        })
+    })
+})
+
+// GET CAR WITH PAGINATION 2 - SUCCESS
 router.get("/:indexPage" , (req, res) => {
     const indexPage = req.params.indexPage;
     Car.find().populate('author').select().skip(indexPage * 2).limit(2).exec().then(docs => {
@@ -120,7 +187,10 @@ router.get("/:indexPage" , (req, res) => {
     });
 });
 
+
+//POST CAR - PROTECTED ROUTE - SUCCESS
 router.post("/", checkAuth, upload.single('images'), (req, res) => {
+    let user = req.user;
     const car = new Car({
         _id: new mongoose.Types.ObjectId(),
         title : req.body.title,
@@ -142,8 +212,19 @@ router.post("/", checkAuth, upload.single('images'), (req, res) => {
                 message : "File not found, please upload a file"
             });
         }
-        res.status(201).json({
-            message : "Car Save successfully"
+        const carId = car._id;
+        user.cars = user.cars.concat(carId);
+        user.save().then(user => {
+            res.status(201).json({
+                message : "Car and binding User'cars save successfully",
+                carId : carId,
+                userCarId : user.cars,
+            });
+        }).catch(err => {
+            res.status(500).json({
+                message : "Car and binding User failed",
+            });
+            console.log(err);
         });
     }).catch(err => {
         console.log(err);
@@ -151,6 +232,31 @@ router.post("/", checkAuth, upload.single('images'), (req, res) => {
             error : `Car POST has ${err}`
         });
     });
+});
+
+
+// UPDATE FIED BY CAR ID - SUCCESS
+router.patch("/:id", (req, res) => {
+    const id = req.params.id;
+    const ops = {};
+    for (var op of Object.keys(req.body)) {
+        ops[op] = req.body[op];
+    }
+    console.log(ops);
+    Car.updateOne({_id : id}, { $set : ops}).exec().then(doc => {
+        console.log(doc);
+        res.status(200).json({
+            message : "car updated successfully",
+            id : id,
+            update : ops,
+        })
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({
+            message : "Car updated failed in PATCH",
+            error : err,
+        });
+    })
 });
 
 module.exports = router;

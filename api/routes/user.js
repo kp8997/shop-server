@@ -36,10 +36,34 @@ const upload = multer({
     limits: myLimit,
 });
 
-router.post("/image", (req, res) => {
-    
+router.post("/image", checkAuth, upload.single('images'), (req, res) => {
+    const user = req.user;
+    const fileName = req.file.filename;
+    if (user) {
+        if (fileName !== undefined) {
+            user.avatar = fileName;
+            user.save().then(doc => {
+                res.status(200).json({
+                    message : "Set avatar success",
+                    image : doc.avatar
+                });
+            }).catch(err => {
+                console.log(err);
+                res.status(500).json({
+                    message : "Set avatar failed",
+                    error : err
+                });
+            })
+
+        }
+    } else {
+        res.status(408).json({
+            message : "Time out in post user image - it took too long"
+        });
+    }
 });
 
+//SUCCESS BUT INFUTURE NOT USE
 router.get("/", (req, res) => {
     User.find().select('_id name email phone').exec().then(docs => {
         res.status(200).json({
@@ -53,6 +77,7 @@ router.get("/", (req, res) => {
     })});
 })
 
+//SUCCESS
 router.get("/:id", checkAuth, (req, res) => {
     User.findById({_id : req.params.id})
     .select("_id email name phone createAt")
@@ -72,6 +97,7 @@ router.get("/:id", checkAuth, (req, res) => {
     });
 });
 
+//SUCCESS
 router.post("/login", (req, res) => {
     User.find({email : req.body.email})
         .exec()
@@ -118,6 +144,7 @@ router.post("/login", (req, res) => {
         });
 });
 
+// SUCCESS
 router.post("/register", (req, res) => {
     User.find({ email : req.body.email})
         .exec()
@@ -167,11 +194,36 @@ router.post("/register", (req, res) => {
         });       
 });
 
+//SUCCESS
 router.delete("/logout", checkAuth, (req, res) => {
     req.user.removeToken(req.token).then(() => {
         res.status(200).json({ message: "user_logout remove token successfully" });
     }, () => {
         res.status(400).json({ message: "user_logout remove token failure" });
+    });
+});
+
+//HAVE NOT TESTED YET
+router.patch("/:id", (req, res) => {
+    const id = req.params.id;
+    const ops = {};
+    for (var op of Object.keys(req.body)) {
+        ops[op] = req.body[op];
+    }
+    console.log(ops);
+    User.updateOne({_id : id}, { $set : ops}).exec().then(doc => {
+        console.log(doc);
+        res.status(200).json({
+            message : "user updated successfully",
+            id : id,
+            update : ops,
+        })
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({
+            message : "user update failed in PATCH",
+            error : err,
+        });
     });
 });
 
