@@ -24,7 +24,7 @@ const userSchema = Schema({
         default : Date.now(),
     },
     avatar : {
-        type : String,
+        type : [String],
         required : false,
     },
     phone : {

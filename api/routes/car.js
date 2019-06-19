@@ -62,6 +62,7 @@ router.get("/", (req, res) => {
                     gear : doc.gear,
                     price : doc.price,
                     imagesFilename : doc.imagesFilename,
+                    author : doc.author.name
                 }
             })
         };
@@ -198,7 +199,7 @@ router.post("/", checkAuth, upload.single('images'), (req, res) => {
         origin : req.body.origin,
         year : req.body.year,
         model : req.body.model,
-        color : req.body.color,
+        color : req.body.color, 
         distance : req.body.distance,
         gear : req.body.gear,
         price : req.body.price,
@@ -236,7 +237,7 @@ router.post("/", checkAuth, upload.single('images'), (req, res) => {
 
 
 // UPDATE FIED BY CAR ID - SUCCESS
-router.patch("/:id", (req, res) => {
+router.patch("/:id", checkAuth, (req, res) => {
     const id = req.params.id;
     const ops = {};
     for (var op of Object.keys(req.body)) {
