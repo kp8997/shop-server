@@ -57,7 +57,7 @@ userSchema.methods.generateAuthToken = function () {
         email : user.email,
         access
     }, process.env.JWT_KEY || 'secret', {
-        expiresIn: "20m",
+        expiresIn: "40m",
         algorithm: "HS384",
     });
     // console.log(token);
@@ -82,6 +82,30 @@ userSchema.methods.removeToken = function(token) {
         }
     });
 };
+
+userSchema.methods.checkCar = function(paramId) {
+    let user = this;
+    let carId;
+    try 
+    {
+        carId = user.cars.find(car => {
+            return car == paramId;
+        });
+
+        console.log(carId);
+        if (carId == undefined) {
+            return new Promise((resolve, reject) => {
+                reject("That user don't own that car");
+            });
+        }
+    } catch (err) {
+        console.log(err);
+        return new Promise((resolve, reject) => {
+            reject("Error when find carId");
+        });
+    }
+    return Promise.resolve(carId);
+}
 
 userSchema.statics.findByToken = function(token) {
     const user = this;

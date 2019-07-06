@@ -83,20 +83,6 @@ router.get("/", (req, res) => {
             count : docs.length,
             cars : docs.map(doc => {
                 return doc;
-                // return {
-                //     id : doc._id,
-                //     title : doc.title,
-                //     brand : doc.brand,
-                //     origin : doc.origin,
-                //     year : doc.year,
-                //     model : doc.model,
-                //     color : doc.color,
-                //     distance : doc.distance,
-                //     gear : doc.gear,
-                //     price : doc.price,
-                //     imagesFilename : doc.imagesFilename,
-                //     author : doc.author.name
-                // }
             })
         };
         res.status(200).json(response);
@@ -274,97 +260,56 @@ router.patch("/:id", checkAuth, (req, res) => {
     })
 });
 
-
-// router.delete("/:id", (req, res) => {
-//     return Car.findById({ _id : req.params.id}, function(err, car) {
-//         if (car) {
-//             return car.remove(function(err) {
-//                 console.log(err);
-//                 if(!err) {
-//                     console.log(car);
-//                     User.update(
-//                         {_id : 
-//                             {$in : car.author}
-//                         },
-//                         {$pull : 
-//                             {cars : {
-//                                 _id : car._id}}
-//                         },
-//                         {
-//                             multi : true
-//                         },
-//                         function(err, numberAffected) {
-//                             if(numberAffected) {
-//                                 console.log(numberAffected);
-//                                 res.status(200).json({
-//                                     message : "delete successfully",
-//                                     numberAffected : numberAffected
-//                                 })
-//                             } else if (err) {
-//                                 console.log(err);
-//                                 res.status(500).json({
-//                                     error : err
-//                                 })
-//                             }
-//                         }
-//                     )
-//                 } else {
-//                     res.status(500).json({
-//                         error : err
-//                     });
-//                     console.log(err);
-//                 }
-//             });
-//         } else {
-//             res.status(404).json({
-//                 error : err,
-//                 message : "Not found"
-//             })
-//         }
-//     })
-// });
-
-router.delete("/:id", (req, res) => {
-    Car.findById({_id : req.params.id}).exec().then(car => {
-        car.remove().then(result => {
-            console.log(result);
-            User.findOneAndUpdate(
-                {_id : car.author},
-                {
-                    $pull : {
-                    cars : car._id
-                }},
-                {
-                    new : true,
-                    multi : true,
-                    safe : true
-                }
-            ).select("_id cars email name").exec().then(doc => {
-                res.status(200).json({
-                    message : "delete suceessfully",
-                    result : doc
-                })
+// DELETE CAR AND REFERENCE -> SUCCESS
+router.delete("/:id", checkAuth, (req, res) => {
+    req.user.checkCar(req.params.id).then(carId => {
+        Car.findById({_id : carId}).exec().then(car => {
+            car.remove().then(result => {
+                console.log(result);
+                User.findOneAndUpdate(
+                    {_id : car.author},
+                    {
+                        $pull : {
+                        cars : car._id
+                    }},
+                    {
+                        new : true,
+                        multi : true,
+                        safe : true
+                    })
+                .select("_id cars email name").exec().then(doc => {
+                    res.status(200).json({
+                        message : "Delete suceessfully",
+                        result : doc
+                    })
+                }).catch(err => {
+                    console.log(err);
+                    res.status(500).json({
+                        message : "Error in user updateOne method",
+                        error : err
+                    });
+                });
             }).catch(err => {
-                console.log(err);
+                console.log(err)
                 res.status(500).json({
-                    message : "error in user updateOne method",
+                    message : "Error in car remove method",
                     error : err
                 });
             });
         }).catch(err => {
-            console.log(err)
+            console.log(err);
             res.status(500).json({
-                message : "error in car remove method",
+                message : "Error in car findById method",
                 error : err
             });
         });
     }).catch(err => {
         console.log(err);
         res.status(500).json({
-            message : "error in car findById method",
+            message : "Error in user checkCar method",
             error : err
         });
-    })
+    });
 })
 
 module.exports = router;
