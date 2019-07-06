@@ -52,14 +52,14 @@ router.get("/filter", (req, res) => {
     }).exec().then(docs => {
         if (docs.length > 0) {
             const response = {
-                message : `filter with ${brand} and ${year} success`,
+                message : `filter successfully`,
                 count : docs.length,
                 cars : docs,
             }
             res.status(200).json(response);
         } else {
             res.status(404).json({
-                message : `Not found documents with ${brand} and ${year}`,
+                message : `Not found documents`,
             })
         }
     }).catch(err => {
