@@ -246,11 +246,18 @@ router.patch("/:id", checkAuth, (req, res) => {
     console.log(ops);
     Car.updateOne({_id : id}, { $set : ops}).exec().then(doc => {
         console.log(doc);
-        res.status(200).json({
-            message : "car updated successfully",
-            id : id,
-            update : ops,
-        })
+        if (doc.ok == 1) {
+            res.status(200).json({
+                message : "car updated successfully",
+                id : id,
+                update : ops,
+            })
+        } else {
+            res.status(405).json({
+                message : "car is not update because of wrong fields",
+                id : id
+            });
+        }
     }).catch(err => {
         console.log(err);
         res.status(500).json({
@@ -298,7 +305,7 @@ router.delete("/:id", checkAuth, (req, res) => {
             });
         }).catch(err => {
             console.log(err);
-            res.status(500).json({
+            res.status(404).json({
                 message : "Error in car findById method",
                 error : err
             });
