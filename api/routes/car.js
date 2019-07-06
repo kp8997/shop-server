@@ -275,4 +275,96 @@ router.patch("/:id", checkAuth, (req, res) => {
 });
 
 
+// router.delete("/:id", (req, res) => {
+//     return Car.findById({ _id : req.params.id}, function(err, car) {
+//         if (car) {
+//             return car.remove(function(err) {
+//                 console.log(err);
+//                 if(!err) {
+//                     console.log(car);
+//                     User.update(
+//                         {_id : 
+//                             {$in : car.author}
+//                         },
+//                         {$pull : 
+//                             {cars : {
+//                                 _id : car._id}}
+//                         },
+//                         {
+//                             multi : true
+//                         },
+//                         function(err, numberAffected) {
+//                             if(numberAffected) {
+//                                 console.log(numberAffected);
+//                                 res.status(200).json({
+//                                     message : "delete successfully",
+//                                     numberAffected : numberAffected
+//                                 })
+//                             } else if (err) {
+//                                 console.log(err);
+//                                 res.status(500).json({
+//                                     error : err
+//                                 })
+//                             }
+//                         }
+//                     )
+//                 } else {
+//                     res.status(500).json({
+//                         error : err
+//                     });
+//                     console.log(err);
+//                 }
+//             });
+//         } else {
+//             res.status(404).json({
+//                 error : err,
+//                 message : "Not found"
+//             })
+//         }
+//     })
+// });
+
+router.delete("/:id", (req, res) => {
+    Car.findById({_id : req.params.id}).exec().then(car => {
+        car.remove().then(result => {
+            console.log(result);
+            User.findOneAndUpdate(
+                {_id : car.author},
+                {
+                    $pull : {
+                    cars : car._id
+                }},
+                {
+                    new : true,
+                    multi : true,
+                    safe : true
+                }
+            ).select("_id cars email name").exec().then(doc => {
+                res.status(200).json({
+                    message : "delete suceessfully",
+                    result : doc
+                })
+            }).catch(err => {
+                console.log(err);
+                res.status(500).json({
+                    message : "error in user updateOne method",
+                    error : err
+                });
+            });
+        }).catch(err => {
+            console.log(err)
+            res.status(500).json({
+                message : "error in car remove method",
+                error : err
+            });
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({
+            message : "error in car findById method",
+            error : err
+        });
+    })
+})
+
 module.exports = router;
