@@ -40,30 +40,38 @@ const upload = multer({
     limits: myLimit,
 });
 
+router.post("/filter/:brand/:year", (req, res) => {
+
+});
+
 // GET ALL CAR WITH OUT PAGINATION - SUCCESS BUT NOT USE ANYMORE
 router.get("/", (req, res) => {
     // list of image on firebase storage
     //const imagesRef = storageRef.child('images');
-    Car.find().select().populate('author').exec().then(docs =>{
+    Car.find().select('id title brand origin year model color distance gear price imagesFilename author isNewCar').populate({
+        path : 'author',
+        model : User,
+        select : "name"
+    }).exec().then(docs =>{
         //console.log(docs);
         const response = {
             count : docs.length,
             cars : docs.map(doc => {
-                //const image = imagesRef.child(`${doc.imagesFilename + '.jpg'} `);
-                return {
-                    id : doc._id,
-                    title : doc.title,
-                    brand : doc.brand,
-                    origin : doc.origin,
-                    year : doc.year,
-                    model : doc.model,
-                    color : doc.color,
-                    distance : doc.distance,
-                    gear : doc.gear,
-                    price : doc.price,
-                    imagesFilename : doc.imagesFilename,
-                    author : doc.author.name
-                }
+                return doc;
+                // return {
+                //     id : doc._id,
+                //     title : doc.title,
+                //     brand : doc.brand,
+                //     origin : doc.origin,
+                //     year : doc.year,
+                //     model : doc.model,
+                //     color : doc.color,
+                //     distance : doc.distance,
+                //     gear : doc.gear,
+                //     price : doc.price,
+                //     imagesFilename : doc.imagesFilename,
+                //     author : doc.author.name
+                // }
             })
         };
         res.status(200).json(response);
@@ -79,23 +87,15 @@ router.get("/", (req, res) => {
 // GET DETAIL CAR BY CAR ID - SUCCESS
 router.get("/detail/:id", (req, res) => {
     const id = req.params.id;
-    Car.findOne({_id : id}).select().exec().then(doc => {
+    Car.findOne({_id : id}).select('id title brand origin year model color distance gear price imagesFilename author').populate({
+        path : 'author',
+        model : User,
+        select : "name"
+    }).exec().then(doc => {
         console.log(doc);
         res.status(200).json({
-            message : "get a car successfully",
-            car : {
-                id : doc._id,
-                title : doc.title,
-                brand : doc.brand,
-                origin : doc.origin,
-                year : doc.year,
-                model : doc.model,
-                color : doc.color,
-                distance : doc.distance,
-                gear : doc.gear,
-                price : doc.price,
-                imagesFilename : doc.imagesFilename,
-            }
+            message : "Route get a car successfully",
+            car : doc,
         });
     }).catch(err => {
         console.log(err);
@@ -140,6 +140,8 @@ router.get("/my-car/:userId", (req, res) => {
         })
     })
 })
+
+
 
 // GET CAR WITH PAGINATION 2 - SUCCESS
 router.get("/:indexPage" , (req, res) => {
@@ -205,7 +207,8 @@ router.post("/", checkAuth, upload.single('images'), (req, res) => {
         price : req.body.price,
         imagesPath : req.file.path,
         imagesFilename : req.file.filename,
-        author : req.user._id
+        author : req.user._id,
+        isNewCar : req.body.isNewCar
     });
     car.save().then(car => {
         if (!req.file) {

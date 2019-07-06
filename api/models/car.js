@@ -56,6 +56,11 @@ const carSchema = Schema({
     createAt : {
         type : Date,
         default : Date.now(),
+    },
+    isNewCar : {
+        type : Boolean,
+        required : true,
+        default : false
     }
 });
 
