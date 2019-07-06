@@ -7,6 +7,7 @@ const gcsSharp = require('multer-sharp');
 const mongoose = require("mongoose");
 const checkAuth = require("../middleware/checkAuth");
 const User = require("../models/user");
+const url = require("url");
 require ('custom-env').env('staging');
 // const firebase = require('firebase');
 // const storage = firebase.storage();
@@ -40,15 +41,39 @@ const upload = multer({
     limits: myLimit,
 });
 
-router.post("/filter/:brand/:year", (req, res) => {
-
+// FILTER WITH PARAMS AND VALUE FROM CLIENT-SIDE -> SUCCESS 
+router.get("/filter", (req, res) => {
+    const query = url.parse(req.url, true).query;
+    console.log(query);
+    Car.find(query).select('_id title brand origin year model color distance gear price imagesFilename author isNewCar').populate({
+        path : 'author',
+        model : User,
+        select : "name"
+    }).exec().then(docs => {
+        if (docs.length > 0) {
+            const response = {
+                message : `filter with ${brand} and ${year} success`,
+                count : docs.length,
+                cars : docs,
+            }
+            res.status(200).json(response);
+        } else {
+            res.status(404).json({
+                message : `Not found documents with ${brand} and ${year}`,
+            })
+        }
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({error});
+    });
 });
+
 
 // GET ALL CAR WITH OUT PAGINATION - SUCCESS BUT NOT USE ANYMORE
 router.get("/", (req, res) => {
     // list of image on firebase storage
     //const imagesRef = storageRef.child('images');
-    Car.find().select('id title brand origin year model color distance gear price imagesFilename author isNewCar').populate({
+    Car.find().select('_id title brand origin year model color distance gear price imagesFilename author isNewCar').populate({
         path : 'author',
         model : User,
         select : "name"
@@ -87,7 +112,7 @@ router.get("/", (req, res) => {
 // GET DETAIL CAR BY CAR ID - SUCCESS
 router.get("/detail/:id", (req, res) => {
     const id = req.params.id;
-    Car.findOne({_id : id}).select('id title brand origin year model color distance gear price imagesFilename author isNewCar').populate({
+    Car.findOne({_id : id}).select('_id title brand origin year model color distance gear price imagesFilename author isNewCar').populate({
         path : 'author',
         model : User,
         select : "name"
@@ -146,7 +171,7 @@ router.get("/my-car/:userId", (req, res) => {
 // GET CAR WITH PAGINATION 2 - SUCCESS
 router.get("/:indexPage" , (req, res) => {
     const indexPage = req.params.indexPage;
-    Car.find().select('id title brand origin year model color distance gear price imagesFilename author isNewCar').populate({
+    Car.find().select('_id title brand origin year model color distance gear price imagesFilename author isNewCar').populate({
         path : 'author',
         model : User,
         select : "name"
@@ -248,5 +273,6 @@ router.patch("/:id", checkAuth, (req, res) => {
         });
     })
 });
+
 
 module.exports = router;

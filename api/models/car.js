@@ -11,10 +11,14 @@ const carSchema = Schema({
     brand : {
         type : String,
         required : true,
+        trim : true,
+        lowercase : true
     },
     origin : {
         type : String,
         required : true,
+        trim : true,
+        lowercase : true
     },
     year : {
         type : Number,
@@ -27,6 +31,8 @@ const carSchema = Schema({
     color : {
         type : String,
         required : true,
+        trim : true,
+        lowercase : true,
     },
     distance : {
         type : Number,
@@ -35,6 +41,8 @@ const carSchema = Schema({
     gear : {
         type : String,
         required : true,
+        trim : true,
+        lowercase : true
     },
     price : {
         type : Number,
