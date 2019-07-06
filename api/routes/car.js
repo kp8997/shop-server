@@ -87,7 +87,7 @@ router.get("/", (req, res) => {
 // GET DETAIL CAR BY CAR ID - SUCCESS
 router.get("/detail/:id", (req, res) => {
     const id = req.params.id;
-    Car.findOne({_id : id}).select('id title brand origin year model color distance gear price imagesFilename author').populate({
+    Car.findOne({_id : id}).select('id title brand origin year model color distance gear price imagesFilename author isNewCar').populate({
         path : 'author',
         model : User,
         select : "name"
@@ -146,7 +146,11 @@ router.get("/my-car/:userId", (req, res) => {
 // GET CAR WITH PAGINATION 2 - SUCCESS
 router.get("/:indexPage" , (req, res) => {
     const indexPage = req.params.indexPage;
-    Car.find().populate('author').select().skip(indexPage * 2).limit(2).exec().then(docs => {
+    Car.find().select('id title brand origin year model color distance gear price imagesFilename author isNewCar').populate({
+        path : 'author',
+        model : User,
+        select : "name"
+    }).skip(indexPage * 2).limit(2).exec().then(docs => {
         //console.log(docs);
         Car.countDocuments({}, (err, count) => {
             if (err) {
@@ -156,25 +160,7 @@ router.get("/:indexPage" , (req, res) => {
                 const response = {
                     count : count,
                     cars : docs.map(doc => {
-                        let authorName = "Admin";
-                        if (doc.author !== undefined && doc.author !== null) {
-                            console.log(doc.author.name);
-                            authorName = doc.author.name;
-                        }
-                        return {
-                            id : doc._id,
-                            title : doc.title,
-                            brand : doc.brand,
-                            origin : doc.origin,
-                            year : doc.year,
-                            model : doc.model,
-                            color : doc.color,
-                            distance : doc.distance,
-                            gear : doc.gear,
-                            price : doc.price,
-                            imagesFilename : doc.imagesFilename,
-                            author : authorName
-                        }
+                        return doc;
                     })
                 };
                 res.status(200).json(response);

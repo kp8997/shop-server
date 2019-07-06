@@ -5,7 +5,7 @@ module.exports = (req, res, next) => {
     const authorization = req.header('Authorization');
     if(authorization) {
         const token = authorization.split(" ")[1];
-        console.log("token :" ,token);
+        //console.log("token :" ,token);
         User.findByToken(token).then(user => {
             if (!user) {
                 return Promise.reject();
