@@ -18,10 +18,13 @@ require ('custom-env').env('staging');
 const url = 'mongodb://localhost:27017/test';
 const name = process.env.DBNAME;
 const pass = process.env.DBPASS;
-mongoose.connect(`mongodb://${name}:${pass}@ds125994.mlab.com:25994/shop-server`, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify : false}  );
+mongoose.connect(`mongodb://${name}:${pass}@ds125994.mlab.com:25994/shop-server`, {  useNewUrlParser: true, useCreateIndex: true, useFindAndModify : false}  );
 //mongoose.connect(url,  { useNewUrlParser: true, useCreateIndex: true, useFindAndModify : false})
 var db = mongoose.connection;
-
+db.on('index', function(error) {
+  // "_id index cannot be sparse"
+  console.log(error.message);
+});
 db.on('error', (error) => {
     console.log(error);
   });

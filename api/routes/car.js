@@ -317,6 +317,37 @@ router.delete("/:id", checkAuth, (req, res) => {
             error : err
         });
     });
-})
+});
+
+// ERROR - TESTING
+router.get('/search/:term', (req, res) => {
+    const term = req.params.term;
+    Car.checkTerm(term).then(term => {
+        Car.find({$text : { $search : term}}).select('_id title brand origin year model color distance gear price imagesFilename isNewCar').populate({
+            path : 'author',
+            model : User,
+            select : "name"
+        }).limit(10).exec().then(cars => {
+            const response = {
+                message : "Search sucessfully",
+                count : cars.length,
+                cars : cars,
+            };
+            res.status(200).json(response);
+        }).catch(err => {
+            console.log(err);
+            res.status(500).json({
+                message : "error in car find with $text",
+                error : err
+            })
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(405).json({
+            message : "error in car checkTerm",
+            error : err
+        })
+    })
+});
 
 module.exports = router;

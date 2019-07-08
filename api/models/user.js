@@ -3,17 +3,20 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Car = require('./car');
 const Schema = mongoose.Schema;
-
-const userSchema = Schema({
+var userSchema = Schema({
     _id : mongoose.Schema.Types.ObjectId,
     email : {
         type : String,
         required : true,
         match : /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
+        index : true,
+        text : true,
     },
     name : {
         type : String,
         required : true,
+        index : true,
+        text : true,
     },
     password : {
         type : String,
@@ -48,6 +51,13 @@ const userSchema = Schema({
     }]
 });
 
+userSchema.index({ email : 1, name : 'text'}, {
+    sparse : true,
+    weight : {
+        name : 4,
+        email : 1,
+    }
+});
 
 userSchema.methods.generateAuthToken = function () {
     var user = this;
@@ -126,5 +136,6 @@ userSchema.statics.findByToken = function(token) {
     });
     
 }   
+
 
 module.exports = mongoose.model("User", userSchema);

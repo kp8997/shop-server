@@ -25,6 +25,5 @@ module.exports = (req, res, next) => {
         return res.status(401).json({
             message : "Not Have Token in Authorization in header"
         });
-    }
-    
+    }   
 }
