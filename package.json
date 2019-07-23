@@ -4,8 +4,8 @@
   "description": "node server for react client to connect",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "startt": "node server.js",
+    "startt": "nodemon server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "KHANG",
