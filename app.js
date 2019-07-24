@@ -23,7 +23,11 @@ mongoose.connect(`mongodb://${name}:${pass}@ds125994.mlab.com:25994/shop-server`
   useCreateIndex: true,
   useFindAndModify: false
 });
-//mongoose.connect(url,  { useNewUrlParser: true, useCreateIndex: true, useFindAndModify : false})
+// mongoose.connect(url, {
+//   useNewUrlParser: true,
+//   useCreateIndex: true,
+//   useFindAndModify: false
+// })
 var db = mongoose.connection;
 db.on('index', function (error) {
   // "_id index cannot be sparse"
